@@ -111,25 +111,55 @@ function renderContacts(contacts) {
 function createContactCard(contact) {
 
     const contactCard = document.createElement('div');
-    contactCard.classList.add('contact');
+    contactCard.classList.add('card');
+    contactCard.classList.add('mb-3');
+    contactCard.classList.add('my-4');
+    contactCard.setAttribute('style', 'max-width: 540px;');
+
+    const header = document.createElement('div');
+    header.classList.add('card-header');
+    header.classList.add('row');
+    header.classList.add('g-0');
+
+    const col1 = document.createElement('div');
+    col1.classList.add('col-2');
+
+    const col2 = document.createElement('div');
+    col2.classList.add('col-10');
+    col2.classList.add('d-flex');
+    col2.classList.add('align-items-center');
+
+    const body = document.createElement('div');
+    body.classList.add('card-body');
 
     const photo = document.createElement('img');
+    photo.classList.add('img-fluid');
+    photo.classList.add('rounded');
     photo.src = contact.photo;
     photo.alt = contact.name;
 
     const name = document.createElement('h3');
+    name.classList.add('card-title');
     name.textContent = contact.name;
 
     const phone = document.createElement('p');
+    phone.classList.add('card-text');
     phone.textContent = `Telefone: ${contact.phone}`;
 
     const email = document.createElement('p');
+    email.classList.add('card-text');
     email.textContent = `Email: ${contact.email}`;
 
-    contactCard.appendChild(photo);
-    contactCard.appendChild(name);
-    contactCard.appendChild(phone);
-    contactCard.appendChild(email);
+    col1.appendChild(photo);
+    col2.appendChild(name);
+    header.appendChild(col1);
+    header.appendChild(col2);
+
+    body.appendChild(phone);
+    body.appendChild(email);
+
+    contactCard.appendChild(header);
+    contactCard.appendChild(body);
 
     return contactCard;
 }
