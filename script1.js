@@ -20,6 +20,8 @@ const emailField = document.getElementById('email');
 const photoField = document.getElementById('photo');
 const categoryField = document.getElementById('category');
 
+const btn_confirm = document.getElementById('modal-btn-confirm');
+
 document.addEventListener('DOMContentLoaded', function () {
     listContacts();
     addCategoryOptions();
@@ -53,7 +55,9 @@ function addCategoryOptions() {
 function fillCategorySelect(categories) {
     categoryField.innerHTML = ''; // Limpa as categorias existentes
     const firstOption = document.createElement('option');
-    firstOption.setAttribute('selected', true);
+    firstOption.setAttribute('value', '');
+    firstOption.setAttribute('selected', '');
+    firstOption.setAttribute('disabled', '');
     firstOption.textContent = "Escolha uma categoria";
     categoryField.appendChild(firstOption);
 
@@ -74,7 +78,12 @@ function submitContact(event) {
         phone: formData.get('phone'),
         email: formData.get('email'),
         photo: formData.get('photo') || 'https://via.placeholder.com/100', // Foto padrão
+        bio: formData.get('bio'),
+        page: formData.get('page'),
+        category: formData.get('category'),
+        favorito: formData.get('favorite'),
     };
+    console.log(contactData);
 
     addContact(contactData)
         .then(() => {
@@ -134,6 +143,10 @@ function addContact(contactData) {
         });
 }
 
+function updateModal(contactId) {
+    btn_confirm.setAttribute('onclick', `removeContact('${contactId}')`);
+}
+
 function removeContact(contactId) {
     return fetch(`https://web01-miniprojeto04-default-rtdb.firebaseio.com/contacts/${contactId}.json`, {
         method: 'DELETE'
@@ -143,6 +156,9 @@ function removeContact(contactId) {
                 throw new Error('Resposta de rede não foi ok');
             }
             listContacts();
+            
+            var modalDelete = new bootstrap.Modal(document.getElementById('modalDelete'));
+            modalDelete.hide();
         });
 }
 
@@ -258,16 +274,19 @@ function createContactCard(contact) {
     btn_group.setAttribute('role', 'group');
 
     const btn_remove = document.createElement('button');
+    btn_remove.setAttribute('type', 'button');
     btn_remove.classList.add('btn');
     btn_remove.classList.add('btn-danger');
-    btn_remove.setAttribute('type', 'button');
-    btn_remove.setAttribute('onclick', `removeContact('${contact.id}')`);
+    btn_remove.setAttribute('data-bs-toggle', 'modal');
+    btn_remove.setAttribute('data-bs-target', '#modalDelete');
+    btn_remove.setAttribute('onclick', `updateModal('${contact.id}')`);
+
     btn_remove.innerHTML = "Remover";
 
     const btn_update = document.createElement('button');
+    btn_update.setAttribute('type', 'button');
     btn_update.classList.add('btn');
     btn_update.classList.add('btn-primary');
-    btn_update.setAttribute('type', 'button');
     btn_update.setAttribute('onclick', `changeForm('${contact.id}')`);
     btn_update.innerHTML = "Editar";
 
