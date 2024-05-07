@@ -18,7 +18,10 @@ const nameField = document.getElementById('name');
 const phoneField = document.getElementById('phone');
 const emailField = document.getElementById('email');
 const photoField = document.getElementById('photo');
+const bioField = document.getElementById('bio');
+const pageField = document.getElementById('page');
 const categoryField = document.getElementById('category');
+const favField = document.getElementById('favorite');
 
 const btn_confirm = document.getElementById('modal-btn-confirm');
 
@@ -81,7 +84,7 @@ function submitContact(event) {
         bio: formData.get('bio'),
         page: formData.get('page'),
         category: formData.get('category'),
-        favorito: formData.get('favorite'),
+        favorite: formData.get('favorite'),
     };
     console.log(contactData);
 
@@ -116,7 +119,11 @@ function fetchContacts() {
                     name: contacts[key].name,
                     phone: contacts[key].phone,
                     email: contacts[key].email,
-                    photo: contacts[key].photo
+                    photo: contacts[key].photo,
+                    bio: contacts[key].bio,
+                    page: contacts[key].page,
+                    category: contacts[key].category,
+                    favorite: contacts[key].favorite
                 });
 
                 //contacts.push({ id: key, ...data[key] });
@@ -156,7 +163,7 @@ function removeContact(contactId) {
                 throw new Error('Resposta de rede não foi ok');
             }
             listContacts();
-            
+
             var modalDelete = new bootstrap.Modal(document.getElementById('modalDelete'));
             modalDelete.hide();
         });
@@ -177,6 +184,10 @@ function changeForm(contactId) {
             phoneField.value = contact.phone;
             emailField.value = contact.email;
             photoField.value = contact.photo;
+            bioField.value = contact.bio;
+            pageField.value = contact.page;
+            categoryField.value = contact.category;
+            favField.checked = (contact.favorite == "on") ? true : false;
 
             const formData = new FormData(addContactForm);
 
@@ -194,6 +205,10 @@ function updateContact(contactId) {
         phone: formData.get('phone'),
         email: formData.get('email'),
         photo: formData.get('photo') || 'https://via.placeholder.com/100', // Foto padrão
+        bio: formData.get('bio'),
+        page: formData.get('page'),
+        category: formData.get('category'),
+        favorite: formData.get('favorite')
     };
 
     return fetch(`https://web01-miniprojeto04-default-rtdb.firebaseio.com/contacts/${contactId}.json`, {
@@ -228,7 +243,6 @@ function renderContacts(contacts) {
 
 // Função para criar o card de contato
 function createContactCard(contact) {
-
     const contactCard = document.createElement('div');
     contactCard.classList.add('card');
     contactCard.classList.add('mb-3');
