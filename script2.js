@@ -1,10 +1,3 @@
-class Category {
-    constructor({ id, name }) {
-        this.id = id;
-        this.name = name;
-    }
-}
-
 const categoryList = document.getElementById('category-list');
 const addCategoryForm = document.getElementById('add-category-form');
 const form_title = document.getElementById('form-title');
@@ -12,6 +5,17 @@ const btn_add = document.getElementById('form-btn-add');
 const btn_edit = document.getElementById('form-btn-edit');
 
 document.addEventListener('DOMContentLoaded', listCategories);
+
+function listCategories() {
+    // Busca categorias na API
+    fetchCategories()
+        .then(categories => {
+            renderCategories(categories);
+        })
+        .catch(error => {
+            console.error('Houve um problema ao buscar as categorias:', error);
+        });
+}
 
 // Event listener para o envio do formulário
 addCategoryForm.addEventListener('submit', submitCategory);
@@ -34,29 +38,6 @@ function submitCategory(event) {
         })
         .catch(error => {
             console.error('Houve um problema ao adicionar a categoria:', error);
-        });
-}
-
-// Função para buscar categorias na API
-function fetchCategories() {
-    return fetch('https://web01-miniprojeto04-default-rtdb.firebaseio.com/categories.json')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Resposta de rede não foi ok');
-            }
-            return response.json();
-        })
-        .then(categories => {
-            const categoriesList = [];
-            for (let key in categories) {
-                const category = new Category({
-                    id: key,
-                    name: categories[key].name
-                });
-
-                categoriesList.push(category);
-            }
-            return categoriesList;
         });
 }
 

@@ -18,6 +18,7 @@ const nameField = document.getElementById('name');
 const phoneField = document.getElementById('phone');
 const emailField = document.getElementById('email');
 const photoField = document.getElementById('photo');
+const categoryField = document.getElementById('category');
 
 document.addEventListener('DOMContentLoaded', function () {
     listContacts();
@@ -40,13 +41,28 @@ function listContacts() {
 
 function addCategoryOptions() {
     // Busca contatos na API
-    fetchContacts()
-        .then(contacts => {
-            renderContacts(contacts);
+    fetchCategories()
+        .then(categories => {
+            fillCategorySelect(categories);
         })
         .catch(error => {
-            console.error('Houve um problema ao buscar os contatos:', error);
+            console.error('Houve um problema ao buscar as categorias:', error);
         });
+}
+
+function fillCategorySelect(categories) {
+    categoryField.innerHTML = ''; // Limpa as categorias existentes
+    const firstOption = document.createElement('option');
+    firstOption.setAttribute('selected', true);
+    firstOption.textContent = "Escolha uma categoria";
+    categoryField.appendChild(firstOption);
+
+    categories.forEach(category => {
+        const newOption = document.createElement('option');
+        newOption.setAttribute('value', `${category.name}`);
+        newOption.textContent = category.name;
+        categoryField.appendChild(newOption);
+    });
 }
 
 function submitContact(event) {
