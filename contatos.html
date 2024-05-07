@@ -20,7 +20,7 @@
             <div class="collapse navbar-collapse" id="idNovo">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="index.html">Contatos</a>
+                        <a class="nav-link active" aria-current="page" href="contatos.html">Contatos</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="categorias.html">Categorias</a>
@@ -51,8 +51,22 @@
                         <input type="url" class="form-control border-dark-subtle" id="photo" name="photo"
                             placeholder="URL da Foto">
                     </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control border-dark-subtle" id="bio" name="bio"
+                            placeholder="Descrição do contato" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" class="form-control border-dark-subtle" id="page" name="page"
+                            placeholder="URL da página pessoal" required>
+                    </div>
+                    <div class="mb-3">
+                        <select class="form-select border-dark-subtle" id="category" name="category">
+                            <option selected>Escolha uma categoria</option>
+                        </select>
+                    </div>
                     <button type="submit" class="btn btn-primary" id="form-btn-add">Adicionar Contato</button>
-                    <button type="button" class="btn btn-primary" id="form-btn-edit" style="display: none;">Salvar Alterações</button>
+                    <button type="button" class="btn btn-primary" id="form-btn-edit" style="display: none;">Salvar
+                        Alterações</button>
                 </form>
             </div>
         </div>
@@ -62,7 +76,8 @@
             <p class="mb-3 mb-md-0 text-light">&copy; 2024 Agenda de Contatos</p>
         </div>
     </footer>
-    <script src="script.js"></script>
+    <script src="shared_script.js"></script>
+    <script src="script1.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>

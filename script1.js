@@ -19,7 +19,10 @@ const phoneField = document.getElementById('phone');
 const emailField = document.getElementById('email');
 const photoField = document.getElementById('photo');
 
-document.addEventListener('DOMContentLoaded', listContacts);
+document.addEventListener('DOMContentLoaded', function () {
+    listContacts();
+    addCategoryOptions();
+});
 
 // Event listener para o envio do formulário
 addContactForm.addEventListener('submit', submitContact);
@@ -33,7 +36,17 @@ function listContacts() {
         .catch(error => {
             console.error('Houve um problema ao buscar os contatos:', error);
         });
+}
 
+function addCategoryOptions() {
+    // Busca contatos na API
+    fetchContacts()
+        .then(contacts => {
+            renderContacts(contacts);
+        })
+        .catch(error => {
+            console.error('Houve um problema ao buscar os contatos:', error);
+        });
 }
 
 function submitContact(event) {

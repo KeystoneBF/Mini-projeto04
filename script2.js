@@ -16,18 +16,6 @@ document.addEventListener('DOMContentLoaded', listCategories);
 // Event listener para o envio do formulário
 addCategoryForm.addEventListener('submit', submitCategory);
 
-function listCategories() {
-    // Busca categorias na API
-    fetchCategories()
-        .then(categories => {
-            renderCategories(categories);
-        })
-        .catch(error => {
-            console.error('Houve um problema ao buscar as categorias:', error);
-        });
-
-}
-
 function submitCategory(event) {
     event.preventDefault(); // Evita o envio padrão do formulário
 
