@@ -11,9 +11,6 @@
 
 <body>
     <header class="sticky-top text-center bg-dark">
-        <!--<div>
-            <h1 class="text-light">Agenda de Contatos</h1>
-        </div>-->
         <nav class="navbar navbar-expand bg-dark" data-bs-theme="dark">
             <div class="container-fluid">
                 <a class="navbar-brand" href="#">Agenda</a>
@@ -40,12 +37,13 @@
             <div class="col-md-6">
                 <div id="category-list"></div>
                 <form id="add-category-form" class="">
-                    <h2>Adicionar Nova Categoria</h2>
+                    <h2 id="form-title">Adicionar Nova Categoria</h2>
                     <div class="mb-3">
                         <input type="text" class="form-control border-dark-subtle" id="name" name="name"
                             placeholder="Nome da categoria" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Adicionar Categoria</button>
+                    <button type="submit" class="btn btn-primary" id="form-btn-add">Adicionar Categoria</button>
+                    <button type="button" class="btn btn-primary" id="form-btn-edit" style="display: none;">Salvar Alterações</button>
                 </form>
             </div>
         </div>
