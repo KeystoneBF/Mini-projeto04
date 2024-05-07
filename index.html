@@ -34,7 +34,7 @@
             <div class="col-md-6">
                 <div id="contact-list"></div>
                 <form id="add-contact-form" class="">
-                    <h2>Adicionar Novo Contato</h2>
+                    <h2 id="form-title">Adicionar Novo Contato</h2>
                     <div class="mb-3">
                         <input type="text" class="form-control border-dark-subtle" id="name" name="name"
                             placeholder="Nome" required>
@@ -51,7 +51,8 @@
                         <input type="url" class="form-control border-dark-subtle" id="photo" name="photo"
                             placeholder="URL da Foto">
                     </div>
-                    <button type="submit" class="btn btn-primary">Adicionar Contato</button>
+                    <button type="submit" class="btn btn-primary" id="form-btn-add">Adicionar Contato</button>
+                    <button type="button" class="btn btn-primary" id="form-btn-edit" style="display: none;">Salvar Alterações</button>
                 </form>
             </div>
         </div>

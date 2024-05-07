@@ -164,7 +164,6 @@ function createCategoryCard(category) {
     categoryCard.classList.add('card');
     categoryCard.classList.add('card-body');
     categoryCard.classList.add('mb-3');
-    categoryCard.classList.add('my-4');
 
     const name = document.createElement('h3');
     name.classList.add('card-title');

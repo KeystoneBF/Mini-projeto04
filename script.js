@@ -10,6 +10,14 @@ class Contact {
 
 const contactList = document.getElementById('contact-list');
 const addContactForm = document.getElementById('add-contact-form');
+const form_title = document.getElementById('form-title');
+const btn_add = document.getElementById('form-btn-add');
+const btn_edit = document.getElementById('form-btn-edit');
+
+const nameField = document.getElementById('name');
+const phoneField = document.getElementById('phone');
+const emailField = document.getElementById('email');
+const photoField = document.getElementById('photo');
 
 document.addEventListener('DOMContentLoaded', listContacts);
 
@@ -97,6 +105,72 @@ function addContact(contactData) {
         });
 }
 
+function removeContact(contactId) {
+    return fetch(`https://web01-miniprojeto04-default-rtdb.firebaseio.com/contacts/${contactId}.json`, {
+        method: 'DELETE'
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Resposta de rede não foi ok');
+            }
+            listContacts();
+        });
+}
+
+function changeForm(contactId) {
+    return fetch(`https://web01-miniprojeto04-default-rtdb.firebaseio.com/contacts/${contactId}.json`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Resposta de rede não foi ok');
+            }
+            return response.json();
+        })
+        .then(contact => {
+            console.log(`Contato recuperado: ${contact}`);
+
+            nameField.value = contact.name;
+            phoneField.value = contact.phone;
+            emailField.value = contact.email;
+            photoField.value = contact.photo;
+
+            const formData = new FormData(addContactForm);
+
+            btn_add.style.display = 'none';
+            btn_edit.removeAttribute('style');
+            form_title.textContent = "Editar Contato"
+            btn_edit.setAttribute('onclick', `updateContact('${contactId}')`);
+        });
+}
+
+function updateContact(contactId) {
+    const formData = new FormData(addContactForm);
+    const contactData = {
+        name: formData.get('name'),
+        phone: formData.get('phone'),
+        email: formData.get('email'),
+        photo: formData.get('photo') || 'https://via.placeholder.com/100', // Foto padrão
+    };
+
+    return fetch(`https://web01-miniprojeto04-default-rtdb.firebaseio.com/contacts/${contactId}.json`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(contactData),
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Resposta de rede não foi ok');
+            }
+            btn_edit.style.display = 'none';
+            btn_add.removeAttribute('style');
+            form_title.textContent = "Adicionar Contato"
+
+            listContacts();
+            addContactForm.reset(); // Limpa os campos do formulário
+        });
+}
+
 // Função para renderizar contatos na página
 function renderContacts(contacts) {
     contactList.innerHTML = ''; // Limpa os contatos existentes
@@ -150,13 +224,34 @@ function createContactCard(contact) {
     email.classList.add('card-text');
     email.textContent = `Email: ${contact.email}`;
 
+    const btn_group = document.createElement('div');
+    btn_group.classList.add('btn-group');
+    btn_group.setAttribute('role', 'group');
+
+    const btn_remove = document.createElement('button');
+    btn_remove.classList.add('btn');
+    btn_remove.classList.add('btn-danger');
+    btn_remove.setAttribute('type', 'button');
+    btn_remove.setAttribute('onclick', `removeContact('${contact.id}')`);
+    btn_remove.innerHTML = "Remover";
+
+    const btn_update = document.createElement('button');
+    btn_update.classList.add('btn');
+    btn_update.classList.add('btn-primary');
+    btn_update.setAttribute('type', 'button');
+    btn_update.setAttribute('onclick', `changeForm('${contact.id}')`);
+    btn_update.innerHTML = "Editar";
+
     col1.appendChild(photo);
     col2.appendChild(name);
     header.appendChild(col1);
     header.appendChild(col2);
+    btn_group.appendChild(btn_remove);
+    btn_group.appendChild(btn_update);
 
     body.appendChild(phone);
     body.appendChild(email);
+    body.appendChild(btn_group);
 
     contactCard.appendChild(header);
     contactCard.appendChild(body);
