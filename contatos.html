@@ -38,15 +38,15 @@
                         <hr>
                         <div class="mb-3">
                             <input type="text" class="form-control border-dark-subtle" id="name" name="name"
-                                placeholder="Nome" required>
+                                placeholder="Nome" maxlength="20" required> 
                         </div>
                         <div class="mb-3">
                             <input type="tel" class="form-control border-dark-subtle" id="phone" name="phone"
-                                placeholder="Número de Telefone" required>
+                                placeholder="Número de Telefone" maxlength="15" required>
                         </div>
                         <div class="mb-3">
                             <input type="email" class="form-control border-dark-subtle" id="email" name="email"
-                                placeholder="E-mail" required>
+                                placeholder="E-mail" maxlength="20" required>
                         </div>
                         <div class="mb-3">
                             <input type="url" class="form-control border-dark-subtle" id="photo" name="photo"
@@ -75,6 +75,8 @@
                         <button type="submit" class="btn btn-primary" id="form-btn-add">Adicionar Contato</button>
                         <button type="button" class="btn btn-primary" id="form-btn-edit" style="display: none;">Salvar
                             Alterações</button>
+                        <button type="button" class="btn btn-danger" id="cancelar"
+                            onclick="resetForm()">Cancelar</button>
                     </form>
                     <!-- Modal -->
                     <div class="modal fade" id="modalDelete" data-bs-backdrop="static" data-bs-keyboard="false"
@@ -107,6 +109,14 @@
                 <div class="p-3 bg-secondary-subtle border border-dark rounded-3">
                     <h2>Lista de Contatos</h2>
                     <hr>
+                    <div class="input-group mb-3" id="filterGroup">
+                        <label for="filterField" class="input-group-text border-dark-subtle">Filtrar por:</label>
+                        <select id="filterField" class="form-select border-dark-subtle">
+                            <option value="favorites">Favoritos</option>
+                            <option value="names">Nome</option>
+                        </select>
+                        <button type="button" class="btn btn-success" onclick="filterList()">Ok</button>
+                    </div>
                     <div id="contact-list"></div>
                 </div>
             </div>

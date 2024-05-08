@@ -1,10 +1,14 @@
 class Contact {
-    constructor({ id, name, phone, email, photo }) {
+    constructor({ id, name, phone, email, photo, bio, page, category, favorite }) {
         this.id = id;
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.photo = photo;
+        this.bio = bio;
+        this.page = page;
+        this.category = category;
+        this.favorite = favorite;
     }
 }
 
@@ -24,6 +28,8 @@ const categoryField = document.getElementById('category');
 const favField = document.getElementById('favorite');
 
 const btn_confirm = document.getElementById('modal-btn-confirm');
+const filterGroup = document.getElementById('filterGroup');
+const filterField = document.getElementById('filterField');
 
 document.addEventListener('DOMContentLoaded', function () {
     listContacts();
@@ -32,6 +38,30 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Event listener para o envio do formulário
 addContactForm.addEventListener('submit', submitContact);
+
+// Máscara do número de telefone
+phoneField.addEventListener('keypress', () => {
+    let inputLength = phoneField.value.length;
+
+    if (inputLength == 0) {
+        phoneField.value += '('
+    } else if (inputLength == 3) {
+        phoneField.value += ') ';
+    } else if (inputLength == 10){
+        phoneField.value += '-';
+    }
+})
+
+// Máscara do número de telefone
+emailField.addEventListener('keypress', () => {
+    let inputLength = emailField.value.length;
+
+    if (inputLength == 10) {
+        emailField.value += '@'
+    } else if (inputLength == 16) {
+        emailField.value += '.';
+    }
+})
 
 function listContacts() {
     // Busca contatos na API
@@ -72,6 +102,14 @@ function fillCategorySelect(categories) {
     });
 }
 
+function resetForm() {
+    btn_edit.style.display = 'none';
+    btn_add.removeAttribute('style');
+    form_title.textContent = "Adicionar Novo Contato"
+
+    addContactForm.reset();
+}
+
 function submitContact(event) {
     event.preventDefault(); // Evita o envio padrão do formulário
 
@@ -84,7 +122,7 @@ function submitContact(event) {
         bio: formData.get('bio'),
         page: formData.get('page'),
         category: formData.get('category'),
-        favorite: formData.get('favorite'),
+        favorite: formData.get('favorite') || "off",
     };
     console.log(contactData);
 
@@ -147,6 +185,8 @@ function addContact(contactData) {
             if (!response.ok) {
                 throw new Error('Resposta de rede não foi ok');
             }
+
+            alert("Contato adicionado com sucesso!");
         });
 }
 
@@ -166,6 +206,7 @@ function removeContact(contactId) {
 
             var modalDelete = new bootstrap.Modal(document.getElementById('modalDelete'));
             modalDelete.hide();
+            alert("Remoção realizada com sucesso!");
         });
 }
 
@@ -178,8 +219,6 @@ function changeForm(contactId) {
             return response.json();
         })
         .then(contact => {
-            console.log(`Contato recuperado: ${contact}`);
-
             nameField.value = contact.name;
             phoneField.value = contact.phone;
             emailField.value = contact.email;
@@ -208,7 +247,7 @@ function updateContact(contactId) {
         bio: formData.get('bio'),
         page: formData.get('page'),
         category: formData.get('category'),
-        favorite: formData.get('favorite')
+        favorite: formData.get('favorite') || "off"
     };
 
     return fetch(`https://web01-miniprojeto04-default-rtdb.firebaseio.com/contacts/${contactId}.json`, {
@@ -224,10 +263,11 @@ function updateContact(contactId) {
             }
             btn_edit.style.display = 'none';
             btn_add.removeAttribute('style');
-            form_title.textContent = "Adicionar Contato"
+            form_title.textContent = "Adicionar Novo Contato"
 
             listContacts();
             addContactForm.reset(); // Limpa os campos do formulário
+            alert("Edição realizada com sucesso!");
         });
 }
 
@@ -246,7 +286,6 @@ function createContactCard(contact) {
     const contactCard = document.createElement('div');
     contactCard.classList.add('card');
     contactCard.classList.add('mb-3');
-    contactCard.classList.add('my-4');
     contactCard.setAttribute('style', 'max-width: 540px;');
 
     const header = document.createElement('div');
@@ -255,10 +294,12 @@ function createContactCard(contact) {
     header.classList.add('g-0');
 
     const col1 = document.createElement('div');
-    col1.classList.add('col-2');
+    col1.classList.add('col-3');
+    //col1.setAttribute('style', 'max-height: 100px;');
 
     const col2 = document.createElement('div');
-    col2.classList.add('col-10');
+    col2.classList.add('col-9');
+    col2.classList.add('ml-2');
     col2.classList.add('d-flex');
     col2.classList.add('align-items-center');
 
@@ -268,6 +309,9 @@ function createContactCard(contact) {
     const photo = document.createElement('img');
     photo.classList.add('img-fluid');
     photo.classList.add('rounded');
+    photo.classList.add('border');
+    photo.classList.add('border-dark-subtle');
+    photo.setAttribute('style', 'width:100px; height: 100px; object-fit: cover;');
     photo.src = contact.photo;
     photo.alt = contact.name;
 
@@ -290,7 +334,7 @@ function createContactCard(contact) {
     const btn_remove = document.createElement('button');
     btn_remove.setAttribute('type', 'button');
     btn_remove.classList.add('btn');
-    btn_remove.classList.add('btn-danger');
+    btn_remove.classList.add('btn-secondary');
     btn_remove.setAttribute('data-bs-toggle', 'modal');
     btn_remove.setAttribute('data-bs-target', '#modalDelete');
     btn_remove.setAttribute('onclick', `updateModal('${contact.id}')`);
@@ -304,12 +348,20 @@ function createContactCard(contact) {
     btn_update.setAttribute('onclick', `changeForm('${contact.id}')`);
     btn_update.innerHTML = "Editar";
 
+    const btn_favorite = document.createElement('button');
+    btn_favorite.setAttribute('type', 'button');
+    btn_favorite.classList.add('btn');
+    btn_favorite.classList.add(contact.favorite == "on" ? 'btn-danger' : 'btn-success');
+    btn_favorite.setAttribute('onclick', `favorite('${contact.id}')`);
+    btn_favorite.innerHTML = contact.favorite == "on" ? "Desfavoritar" : "Favoritar";
+
     col1.appendChild(photo);
     col2.appendChild(name);
     header.appendChild(col1);
     header.appendChild(col2);
     btn_group.appendChild(btn_remove);
     btn_group.appendChild(btn_update);
+    btn_group.appendChild(btn_favorite);
 
     body.appendChild(phone);
     body.appendChild(email);
@@ -319,4 +371,49 @@ function createContactCard(contact) {
     contactCard.appendChild(body);
 
     return contactCard;
+}
+
+function filterList() {
+    const filter_type = filterField.value;
+
+    if (filter_type == "favorites") {
+        filterByFavorite();
+    } else if (filter_type == "names") {
+        filterByName();
+    }
+}
+
+function filterByFavorite() {
+    // Busca contatos na API
+    fetchContacts()
+        .then(contacts => {
+            contacts = contacts.filter(contact => contact.favorite == "on");
+            renderContacts(contacts);
+        })
+        .catch(error => {
+            console.error('Houve um problema ao buscar os contatos:', error);
+        });
+}
+
+function filterByName() {
+    // Busca contatos na API
+    fetchContacts()
+        .then(contacts => {
+            contacts.sort(function (a, b) {
+                let nameA = a.name.toLowerCase();
+                let nameB = b.name.toLowerCase();
+
+                if (nameA < nameB) {
+                    return -1;
+                }
+                if (nameA > nameB) {
+                    return 1;
+                }
+                return 0;
+            });
+            renderContacts(contacts);
+        })
+        .catch(error => {
+            console.error('Houve um problema ao buscar os contatos:', error);
+        });
 }
