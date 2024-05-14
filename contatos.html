@@ -12,6 +12,7 @@
 <body>
     <nav class="navbar sticky-top navbar-expand bg-dark" data-bs-theme="dark">
         <div class="container-fluid">
+            <a href="" target="_blank"></a>
             <a class="navbar-brand" href="#">Agenda</a>
             <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#idNovo"
                 aria-controls="idNovo" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,7 +39,7 @@
                         <hr>
                         <div class="mb-3">
                             <input type="text" class="form-control border-dark-subtle" id="name" name="name"
-                                placeholder="Nome" maxlength="20" required> 
+                                placeholder="Nome" maxlength="20" required>
                         </div>
                         <div class="mb-3">
                             <input type="tel" class="form-control border-dark-subtle" id="phone" name="phone"
@@ -53,12 +54,14 @@
                                 placeholder="URL da Foto">
                         </div>
                         <div class="mb-3">
-                            <input type="text" class="form-control border-dark-subtle" id="bio" name="bio"
-                                placeholder="Descrição do contato" required>
+                            <!--<input type="text" class="form-control border-dark-subtle" id="bio" name="bio"
+                                placeholder="Descrição do contato" required>-->
+                            <textarea class="form-control border-dark-subtle" name="bio" id="bio" rows="3"
+                                placeholder="Descrição do contato" required></textarea>
                         </div>
                         <div class="mb-3">
                             <input type="text" class="form-control border-dark-subtle" id="page" name="page"
-                                placeholder="URL da página pessoal" required>
+                                placeholder="URL da página pessoal">
                         </div>
                         <div class="mb-3">
                             <select class="form-select border-dark-subtle" id="category" name="category" required>
@@ -112,8 +115,6 @@
                     <div class="input-group mb-3" id="filterGroup">
                         <label for="filterField" class="input-group-text border-dark-subtle">Filtrar por:</label>
                         <select id="filterField" class="form-select border-dark-subtle">
-                            <option value="favorites">Favoritos</option>
-                            <option value="names">Nome</option>
                         </select>
                         <button type="button" class="btn btn-success" onclick="filterList()">Ok</button>
                     </div>

@@ -79,6 +79,7 @@ function addCategoryOptions() {
     fetchCategories()
         .then(categories => {
             fillCategorySelect(categories);
+            fillFilterSelect(categories);
         })
         .catch(error => {
             console.error('Houve um problema ao buscar as categorias:', error);
@@ -99,6 +100,25 @@ function fillCategorySelect(categories) {
         newOption.setAttribute('value', `${category.name}`);
         newOption.textContent = category.name;
         categoryField.appendChild(newOption);
+    });
+}
+
+function fillFilterSelect(categories) {
+    filterField.innerHTML = ''; // Limpa as categorias existentes
+    const opt1 = document.createElement('option');
+    opt1.setAttribute('value', 'names');
+    opt1.textContent = "Ordem alfabética";
+
+    const opt2 = document.createElement('option');
+    opt2.setAttribute('value', 'favorites');
+    opt2.textContent = "Favoritos";
+
+    filterField.append(opt1, opt2);
+    categories.forEach(category => {
+        const newOption = document.createElement('option');
+        newOption.setAttribute('value', `${category.name}`);
+        newOption.textContent = `Categoria: ${category.name}`;
+        filterField.appendChild(newOption);
     });
 }
 
@@ -134,7 +154,7 @@ function getFormData(){
         email: formData.get('email'),
         photo: formData.get('photo') || 'https://via.placeholder.com/100', // Foto padrão
         bio: formData.get('bio'),
-        page: formData.get('page'),
+        page: formData.get('page') || '', // Sem página
         category: formData.get('category'),
         favorite: formData.get('favorite') || "off"
     };
@@ -300,7 +320,7 @@ function createContactCard(contact) {
     col1.classList.add('col-3');
 
     const col2 = document.createElement('div');
-    col2.classList.add('col-9', 'ml-2', 'd-flex', 'align-items-center');
+    col2.classList.add('col-9', 'ml-2', 'd-flex', 'align-items-center', 'row');
 
     const body = document.createElement('div');
     body.classList.add('card-body');
@@ -311,9 +331,20 @@ function createContactCard(contact) {
     photo.src = contact.photo;
     photo.alt = contact.name;
 
-    const name = document.createElement('h3');
-    name.classList.add('card-title');
+    const card_title= document.createElement('h3');
+    card_title.classList.add('card-title');
+
+    const name = document.createElement('a');
+    name.classList.add('text-dark', 'text-decoration-none');
+    name.href = contact.page;
+    name.target = '_blank';
     name.textContent = contact.name;
+
+    card_title.appendChild(name);
+
+    const category = document.createElement('div');
+    category.classList.add('card-text', 'text-warning');
+    category.innerHTML = `<h5>${contact.category}</h5>`;
 
     const phone = document.createElement('p');
     phone.classList.add('card-text');
@@ -322,6 +353,10 @@ function createContactCard(contact) {
     const email = document.createElement('p');
     email.classList.add('card-text');
     email.textContent = `Email: ${contact.email}`;
+
+    const bio = document.createElement('p');
+    bio.classList.add('card-text');
+    bio.textContent = `Descrição: ${contact.bio}`;
 
     const btn_group = document.createElement('div');
     btn_group.classList.add('btn-group');
@@ -350,11 +385,11 @@ function createContactCard(contact) {
     btn_favorite.innerHTML = contact.favorite == "on" ? "Desfavoritar" : "Favoritar";
 
     col1.appendChild(photo);
-    col2.appendChild(name);
+    col2.append(card_title, category);
     header.append(col1, col2);
 
     btn_group.append(btn_remove, btn_update, btn_favorite);
-    body.append(phone, email, btn_group);
+    body.append(phone, email, bio, btn_group);
     contactCard.append(header, body);
 
     return contactCard;
@@ -389,6 +424,8 @@ function filterList() {
         filterByFavorite();
     } else if (filter_type == "names") {
         filterByName();
+    } else {
+        filterByCategory(filter_type);
     }
 }
 
@@ -398,6 +435,7 @@ function filterByFavorite() {
         .then(contacts => {
             contacts = contacts.filter(contact => contact.favorite == "on");
             renderContacts(contacts);
+            alert('Contatos filtrados por favoritos!');
         })
         .catch(error => {
             console.error('Houve um problema ao buscar os contatos:', error);
@@ -421,6 +459,20 @@ function filterByName() {
                 return 0;
             });
             renderContacts(contacts);
+            alert(`Contatos Ordenados por nome!`);
+        })
+        .catch(error => {
+            console.error('Houve um problema ao buscar os contatos:', error);
+        });
+}
+
+function filterByCategory(category_filter) {
+    // Busca contatos na API
+    fetchContacts()
+        .then(contacts => {
+            contacts = contacts.filter(contact => contact.category == category_filter);
+            renderContacts(contacts);
+            alert(`Contatos filtrados pela categoria ${category_filter}!`);
         })
         .catch(error => {
             console.error('Houve um problema ao buscar os contatos:', error);
