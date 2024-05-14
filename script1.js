@@ -187,6 +187,9 @@ function addContact(contactData) {
             }
 
             alert("Contato adicionado com sucesso!");
+        })
+        .catch(error => {
+            console.error('Houve um problema ao adicionar o contato:', error);
         });
 }
 
@@ -207,6 +210,9 @@ function removeContact(contactId) {
             var modalDelete = new bootstrap.Modal(document.getElementById('modalDelete'));
             modalDelete.hide();
             alert("Remoção realizada com sucesso!");
+        })
+        .catch(error => {
+            console.error('Houve um problema ao remover o contato:', error);
         });
 }
 
@@ -234,6 +240,9 @@ function changeForm(contactId) {
             btn_edit.removeAttribute('style');
             form_title.textContent = "Editar Contato"
             btn_edit.setAttribute('onclick', `updateContact('${contactId}')`);
+        })
+        .catch(error => {
+            console.error('Houve um problema ao recuperar informações do contato:', error);
         });
 }
 
@@ -268,6 +277,9 @@ function updateContact(contactId) {
             listContacts();
             addContactForm.reset(); // Limpa os campos do formulário
             alert("Edição realizada com sucesso!");
+        })
+        .catch(error => {
+            console.error('Houve um problema ao editar o contato:', error);
         });
 }
 
@@ -284,33 +296,24 @@ function renderContacts(contacts) {
 // Função para criar o card de contato
 function createContactCard(contact) {
     const contactCard = document.createElement('div');
-    contactCard.classList.add('card');
-    contactCard.classList.add('mb-3');
+    contactCard.classList.add('card', 'mb-3');
     contactCard.setAttribute('style', 'max-width: 540px;');
 
     const header = document.createElement('div');
-    header.classList.add('card-header');
-    header.classList.add('row');
-    header.classList.add('g-0');
+    header.classList.add('card-header', 'row', 'g-0');
 
     const col1 = document.createElement('div');
     col1.classList.add('col-3');
     //col1.setAttribute('style', 'max-height: 100px;');
 
     const col2 = document.createElement('div');
-    col2.classList.add('col-9');
-    col2.classList.add('ml-2');
-    col2.classList.add('d-flex');
-    col2.classList.add('align-items-center');
+    col2.classList.add('col-9', 'ml-2', 'd-flex', 'align-items-center');
 
     const body = document.createElement('div');
     body.classList.add('card-body');
 
     const photo = document.createElement('img');
-    photo.classList.add('img-fluid');
-    photo.classList.add('rounded');
-    photo.classList.add('border');
-    photo.classList.add('border-dark-subtle');
+    photo.classList.add('img-fluid', 'rounded', 'border', 'border-dark-subtle');
     photo.setAttribute('style', 'width:100px; height: 100px; object-fit: cover;');
     photo.src = contact.photo;
     photo.alt = contact.name;
@@ -332,9 +335,8 @@ function createContactCard(contact) {
     btn_group.setAttribute('role', 'group');
 
     const btn_remove = document.createElement('button');
+    btn_remove.classList.add('btn', 'btn-secondary');
     btn_remove.setAttribute('type', 'button');
-    btn_remove.classList.add('btn');
-    btn_remove.classList.add('btn-secondary');
     btn_remove.setAttribute('data-bs-toggle', 'modal');
     btn_remove.setAttribute('data-bs-target', '#modalDelete');
     btn_remove.setAttribute('onclick', `updateModal('${contact.id}')`);
@@ -342,33 +344,25 @@ function createContactCard(contact) {
     btn_remove.innerHTML = "Remover";
 
     const btn_update = document.createElement('button');
+    btn_update.classList.add('btn', 'btn-primary');
     btn_update.setAttribute('type', 'button');
-    btn_update.classList.add('btn');
-    btn_update.classList.add('btn-primary');
     btn_update.setAttribute('onclick', `changeForm('${contact.id}')`);
     btn_update.innerHTML = "Editar";
 
     const btn_favorite = document.createElement('button');
-    btn_favorite.setAttribute('type', 'button');
     btn_favorite.classList.add('btn');
     btn_favorite.classList.add(contact.favorite == "on" ? 'btn-danger' : 'btn-success');
+    btn_favorite.setAttribute('type', 'button');
     btn_favorite.setAttribute('onclick', `favorite('${contact.id}')`);
     btn_favorite.innerHTML = contact.favorite == "on" ? "Desfavoritar" : "Favoritar";
 
     col1.appendChild(photo);
     col2.appendChild(name);
-    header.appendChild(col1);
-    header.appendChild(col2);
-    btn_group.appendChild(btn_remove);
-    btn_group.appendChild(btn_update);
-    btn_group.appendChild(btn_favorite);
-
-    body.appendChild(phone);
-    body.appendChild(email);
-    body.appendChild(btn_group);
-
-    contactCard.appendChild(header);
-    contactCard.appendChild(body);
+    header.append(col1, col2);
+    
+    btn_group.append(btn_remove, btn_update, btn_favorite);
+    body.append(phone, email, btn_group);
+    contactCard.append(header, body);
 
     return contactCard;
 }

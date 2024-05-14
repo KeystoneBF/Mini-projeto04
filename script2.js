@@ -54,6 +54,11 @@ function addCategory(categoryData) {
             if (!response.ok) {
                 throw new Error('Resposta de rede não foi ok');
             }
+
+            alert("Categoria adicionada com sucesso!");
+        })
+        .catch(error => {
+            console.error('Houve um problema ao adicionar a categoria:', error);
         });
 }
 
@@ -66,6 +71,11 @@ function removeCategory(categoryId) {
                 throw new Error('Resposta de rede não foi ok');
             }
             listCategories();
+            
+            alert("Remoção realizada com sucesso!");
+        })
+        .catch(error => {
+            console.error('Houve um problema ao remover a categoria:', error);
         });
 }
 
@@ -113,6 +123,10 @@ function updateCategory(categoryId) {
 
             listCategories();
             addCategoryForm.reset(); // Limpa os campos do formulário
+            alert("Edição realizada com sucesso!");
+        })
+        .catch(error => {
+            console.error('Houve um problema ao editar a categoria:', error);
         });
 }
 
@@ -130,11 +144,9 @@ function renderCategories(categories) {
 function createCategoryCard(category) {
 
     const categoryCard = document.createElement('div');
-    categoryCard.classList.add('card');
-    categoryCard.classList.add('card-body');
-    categoryCard.classList.add('mb-3');
+    categoryCard.classList.add('card', 'card-body', 'mb-3');
 
-    const name = document.createElement('h3');
+    const name = document.createElement('h4');
     name.classList.add('card-title');
     name.textContent = category.name;
 
@@ -143,23 +155,19 @@ function createCategoryCard(category) {
     btn_group.setAttribute('role', 'group');
 
     const btn_remove = document.createElement('button');
-    btn_remove.classList.add('btn');
-    btn_remove.classList.add('btn-danger');
+    btn_remove.classList.add('btn', 'btn-danger', 'btn-sm');
     btn_remove.setAttribute('type', 'button');
     btn_remove.setAttribute('onclick', `removeCategory('${category.id}')`);
     btn_remove.innerHTML = "Remover";
 
     const btn_update = document.createElement('button');
-    btn_update.classList.add('btn');
-    btn_update.classList.add('btn-primary');
+    btn_update.classList.add('btn', 'btn-primary', 'btn-sm');
     btn_update.setAttribute('type', 'button');
     btn_update.setAttribute('onclick', `changeForm('${category.id}')`);
     btn_update.innerHTML = "Editar";
 
-    categoryCard.appendChild(name);
-    btn_group.appendChild(btn_remove);
-    btn_group.appendChild(btn_update);
-    categoryCard.appendChild(btn_group);
+    btn_group.append(btn_remove, btn_update);
+    categoryCard.append(name, btn_group);
 
     return categoryCard;
 }

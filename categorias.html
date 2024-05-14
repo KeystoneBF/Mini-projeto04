@@ -34,20 +34,33 @@
     </header>
     <div class="container py-3">
         <div class="row justify-content-center">
-            <div class="col-md-6">
-                <form id="add-category-form" class="mb-4">
-                    <h2 id="form-title">Adicionar Nova Categoria</h2>
-                    <div class="mb-3">
-                        <input type="text" class="form-control border-dark-subtle" id="name" name="name"
-                            placeholder="Nome da categoria" required>
+            <div class="row gx-4 gy-2">
+                <div class="col-md-6 mb-3">
+                    <div class="p-3 bg-secondary-subtle border border-dark rounded-3">
+                        <form id="add-category-form" class="mb-4">
+                            <h2 id="form-title">Adicionar Nova Categoria</h2>
+                            <hr>
+                            <div class="mb-3">
+                                <input type="text" class="form-control border-dark-subtle" id="name" name="name"
+                                    placeholder="Nome da categoria" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary" id="form-btn-add">Adicionar Categoria</button>
+                            <button type="button" class="btn btn-primary" id="form-btn-edit"
+                                style="display: none;">Salvar
+                                Alterações</button>
+                        </form>
                     </div>
-                    <button type="submit" class="btn btn-primary" id="form-btn-add">Adicionar Categoria</button>
-                    <button type="button" class="btn btn-primary" id="form-btn-edit" style="display: none;">Salvar
-                        Alterações</button>
-                </form>
-                <div id="category-list" class="mb-4"></div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="p-3 bg-secondary-subtle border border-dark rounded-3">
+                        <h2>Lista de Categorias</h2>
+                        <hr>
+                        <div id="category-list" class="mb-4"></div>
+                    </div>
+                </div>
             </div>
         </div>
+    </div>
     </div>
     <footer class="py-3 mt-3 border-top bg-dark">
         <div class="col-md-4 mx-auto text-center">
