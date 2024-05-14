@@ -47,7 +47,7 @@ phoneField.addEventListener('keypress', () => {
         phoneField.value += '('
     } else if (inputLength == 3) {
         phoneField.value += ') ';
-    } else if (inputLength == 10){
+    } else if (inputLength == 10) {
         phoneField.value += '-';
     }
 })
@@ -113,20 +113,7 @@ function resetForm() {
 function submitContact(event) {
     event.preventDefault(); // Evita o envio padrão do formulário
 
-    const formData = new FormData(addContactForm);
-    const contactData = {
-        name: formData.get('name'),
-        phone: formData.get('phone'),
-        email: formData.get('email'),
-        photo: formData.get('photo') || 'https://via.placeholder.com/100', // Foto padrão
-        bio: formData.get('bio'),
-        page: formData.get('page'),
-        category: formData.get('category'),
-        favorite: formData.get('favorite') || "off",
-    };
-    console.log(contactData);
-
-    addContact(contactData)
+    addContact(getFormData())
         .then(() => {
             return fetchContacts();
         })
@@ -139,9 +126,25 @@ function submitContact(event) {
         });
 }
 
+function getFormData(){
+    const formData = new FormData(addContactForm);
+    const contactData = {
+        name: formData.get('name'),
+        phone: formData.get('phone'),
+        email: formData.get('email'),
+        photo: formData.get('photo') || 'https://via.placeholder.com/100', // Foto padrão
+        bio: formData.get('bio'),
+        page: formData.get('page'),
+        category: formData.get('category'),
+        favorite: formData.get('favorite') || "off"
+    };
+    console.log(contactData);
+
+    return contactData;
+}
+
 // Função para buscar contatos na API
 function fetchContacts() {
-    //return fetch('https://imd0404-webi-default-rtdb.firebaseio.com/contacts.json')
     return fetch('https://web01-miniprojeto04-default-rtdb.firebaseio.com/contacts.json')
         .then(response => {
             if (!response.ok) {
@@ -173,7 +176,6 @@ function fetchContacts() {
 
 // Função para adicionar contato na API
 function addContact(contactData) {
-    //return fetch('https://imd0404-webi-default-rtdb.firebaseio.com/contacts.json', {
     return fetch('https://web01-miniprojeto04-default-rtdb.firebaseio.com/contacts.json', {
         method: 'POST',
         headers: {
@@ -234,31 +236,30 @@ function changeForm(contactId) {
             categoryField.value = contact.category;
             favField.checked = (contact.favorite == "on") ? true : false;
 
-            const formData = new FormData(addContactForm);
-
             btn_add.style.display = 'none';
             btn_edit.removeAttribute('style');
             form_title.textContent = "Editar Contato"
-            btn_edit.setAttribute('onclick', `updateContact('${contactId}')`);
+            btn_edit.setAttribute('onclick', `submitEdition('${contactId}')`);
         })
         .catch(error => {
             console.error('Houve um problema ao recuperar informações do contato:', error);
         });
 }
 
-function updateContact(contactId) {
-    const formData = new FormData(addContactForm);
-    const contactData = {
-        name: formData.get('name'),
-        phone: formData.get('phone'),
-        email: formData.get('email'),
-        photo: formData.get('photo') || 'https://via.placeholder.com/100', // Foto padrão
-        bio: formData.get('bio'),
-        page: formData.get('page'),
-        category: formData.get('category'),
-        favorite: formData.get('favorite') || "off"
-    };
+function submitEdition(contactId) {
+    updateContact(contactId, getFormData())
+        .then(() => {
+            btn_edit.style.display = 'none';
+            btn_add.removeAttribute('style');
+            form_title.textContent = "Adicionar Novo Contato"
 
+            listContacts();
+            addContactForm.reset(); // Limpa os campos do formulário
+            alert("Edição realizada com sucesso!");
+        });
+}
+
+function updateContact(contactId, contactData) {
     return fetch(`https://web01-miniprojeto04-default-rtdb.firebaseio.com/contacts/${contactId}.json`, {
         method: 'PUT',
         headers: {
@@ -270,13 +271,6 @@ function updateContact(contactId) {
             if (!response.ok) {
                 throw new Error('Resposta de rede não foi ok');
             }
-            btn_edit.style.display = 'none';
-            btn_add.removeAttribute('style');
-            form_title.textContent = "Adicionar Novo Contato"
-
-            listContacts();
-            addContactForm.reset(); // Limpa os campos do formulário
-            alert("Edição realizada com sucesso!");
         })
         .catch(error => {
             console.error('Houve um problema ao editar o contato:', error);
@@ -304,7 +298,6 @@ function createContactCard(contact) {
 
     const col1 = document.createElement('div');
     col1.classList.add('col-3');
-    //col1.setAttribute('style', 'max-height: 100px;');
 
     const col2 = document.createElement('div');
     col2.classList.add('col-9', 'ml-2', 'd-flex', 'align-items-center');
@@ -353,18 +346,40 @@ function createContactCard(contact) {
     btn_favorite.classList.add('btn');
     btn_favorite.classList.add(contact.favorite == "on" ? 'btn-danger' : 'btn-success');
     btn_favorite.setAttribute('type', 'button');
-    btn_favorite.setAttribute('onclick', `favorite('${contact.id}')`);
+    btn_favorite.setAttribute('onclick', `favoriteContact('${contact.id}')`);
     btn_favorite.innerHTML = contact.favorite == "on" ? "Desfavoritar" : "Favoritar";
 
     col1.appendChild(photo);
     col2.appendChild(name);
     header.append(col1, col2);
-    
+
     btn_group.append(btn_remove, btn_update, btn_favorite);
     body.append(phone, email, btn_group);
     contactCard.append(header, body);
 
     return contactCard;
+}
+
+function favoriteContact(contactId) {
+    return fetch(`https://web01-miniprojeto04-default-rtdb.firebaseio.com/contacts/${contactId}.json`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Resposta de rede não foi ok');
+            }
+            return response.json();
+        })
+        .then(contact => {
+            contact.favorite = contact.favorite == "on" ? "off" : "on";
+
+            updateContact(contactId, contact)
+                .then(() => {
+                    listContacts();
+                    alert("Edição realizada com sucesso!");
+                });
+        })
+        .catch(error => {
+            console.error('Houve um problema ao recuperar informações do contato:', error);
+        });
 }
 
 function filterList() {
